@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main>
         <div>
-            <UserButton afterSignOutUrl = '/' />
+            {/*<UserButton afterSignOutUrl = '/' />*/}
         </div>
       <h1>Bootcamp home page</h1>
         </main>
