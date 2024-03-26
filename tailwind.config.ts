@@ -1,3 +1,5 @@
+/** @type {import('tailwindcss').Config} */
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -6,7 +8,6 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
-
   theme: {
     container: {
       center: true,
@@ -121,7 +122,6 @@ module.exports = {
           fontWeight: "600",
         },
       ],
-
       "small-regular": [
         "14px",
         {
