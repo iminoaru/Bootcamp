@@ -1,0 +1,44 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  username    String      @unique
+  name        String
+  avatar       String?
+  bio         String?
+  posts     Post[]
+  admitted   Boolean     @default(false)
+  communities Community[]
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  text        String
+  author      User        @relation(fields: [authorId], references: [id])
+  authorId    String
+  community   Community?  @relation(fields: [communityId], references: [id])
+  communityId String?
+  createdAt   DateTime    @default(now())
+  parentId    String?
+  children    Thread[]    @relation("PostToPost")
+}
+
+model Community {
+  id          Int      @id @default(autoincrement())
+  username    String      @unique
+  name        String
+  avatar       String?
+  bio         String?
+  createdBy   User?       @relation(fields: [createdById], references: [id])
+  createdById String?
+  posts     Post[]
+  members     User[]
+}
