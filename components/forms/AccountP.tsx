@@ -20,12 +20,14 @@ import {ChangeEvent, useState} from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {isBase64Image} from "@/lib/utils";
 import { useUploadThing } from '@/lib/uploadthing'
+import {updateUser} from "@/lib/actions/user.actions";
+import {usePathname, useRouter} from "next/navigation";
 
 
 interface Props {
     user: {
-        clerkId: string
-        dbId: string
+        clerkId: String
+        dbId: number
         username: string
         name: string
         bio: string
@@ -37,7 +39,8 @@ interface Props {
 export default function AccountP({user , buttonTitle}: Props) {
     const [files , setfiles] = useState<File[]>([])
     const { startUpload } = useUploadThing('media')
-
+    const router = useRouter()
+    const pathname = usePathname()
 
     const form = useForm({
         resolver: zodResolver(userTypes),
@@ -88,8 +91,23 @@ export default function AccountP({user , buttonTitle}: Props) {
             }
         }
 
-        // database add
-        console.log(values)
+        await updateUser({
+            id: user.clerkId,
+            username: values.username,
+            name: values.name,
+            bio: values.bio,
+            avatar: values.avatar,
+            path: pathname
+
+            }
+        )
+        if(pathname === '/profile/edit'){
+            router.back()
+        } else {
+            router.push('/')
+        }
+
+        //console.log(values)
     }
 
     return(

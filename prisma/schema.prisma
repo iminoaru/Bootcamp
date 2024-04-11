@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
+  id          String      @id
   username    String      @unique
   name        String
   avatar       String?
@@ -23,9 +23,9 @@ model Post {
   id          Int      @id @default(autoincrement())
   text        String
   author      User        @relation(fields: [authorId], references: [id])   // Many-to-one relation: Many posts can be authored by one user
-  authorId    Int
+  authorId    String
   community   Community?  @relation(fields: [communityId], references: [id])   // Many-to-one relation: Many posts can belong to one community
-  communityId Int?
+  communityId String?
   createdAt   DateTime    @default(now())
   parentId    Int?
   parent      Post?     @relation("PostToPost", fields: [parentId], references: [id])   // Self-relation: A post can be a parent of other posts
@@ -33,20 +33,20 @@ model Post {
 }
 
 model Community {
-  id          Int      @id @default(autoincrement())
+  id          String      @id
   username    String      @unique
   name        String
   avatar       String?
   bio         String?
   createdBy User?     @relation("CreatedBy", fields: [createdById], references: [id])   // Many-to-one relation: Many communities can be created by one user
-  createdById Int?
+  createdById String?
   posts     Post[]   // One-to-many relation: One community can have many posts
   communityMemberships   CommunityMembership[]   // One-to-many relation: One community can have many members
 }
 
 model CommunityMembership {
-  userId       Int
-  communityId  Int
+  userId       String
+  communityId  String
   user         User         @relation(fields: [userId], references: [id])   // Many-to-one relation: Many memberships can belong to one user
   community    Community    @relation(fields: [communityId], references: [id])   // Many-to-one relation: Many memberships can belong to one community
 
