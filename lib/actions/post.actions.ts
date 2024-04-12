@@ -48,3 +48,49 @@ export const createPost = async ({
         console.error("Error creating post:", error);
     }
 }
+
+
+export const fetchPosts = async (pageNo = 1 , pageSize = 20) => {
+
+
+
+    try {
+        const posts = await prisma.post.findMany({
+            where: {
+                parentId : null || undefined
+            },
+            orderBy: {
+                createdAt : 'desc'
+            },
+            skip: (pageNo - 1) * pageSize,
+            take: pageSize,
+
+            include: {
+                author: true,
+                community: true,
+                children: {
+                    include: {
+                        author: { select: { id: true, name: true, avatar: true } }
+                    }
+                }
+            }
+        })
+
+        const totalPosts = await prisma.post.count({
+            where: {
+                parentId : null || undefined
+            }
+        })
+
+        const isNextPage = totalPosts > posts.length + ((pageNo - 1) * pageSize)
+
+        return {
+            posts,
+            isNextPage
+        }
+
+
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+    }
+}
