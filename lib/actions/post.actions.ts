@@ -1,6 +1,7 @@
 'use server'
 
 import {PrismaClient, User} from '@prisma/client'
+import {babelIncludeRegexes} from "next/dist/build/webpack-config";
 const prisma = new PrismaClient()
 
 type Params = {
@@ -57,7 +58,7 @@ export const fetchPosts = async (pageNo = 1 , pageSize = 20) => {
     try {
         const posts = await prisma.post.findMany({
             where: {
-                parentId : null || undefined
+                parentId : null
             },
             orderBy: {
                 createdAt : 'desc'
@@ -92,5 +93,81 @@ export const fetchPosts = async (pageNo = 1 , pageSize = 20) => {
 
     } catch (error) {
         console.error("Error fetching posts:", error);
+    }
+}
+
+
+export const fetchPostById = async (id: number) => {
+
+    try {
+        const post = await prisma.post.findUnique({
+            where: { id },
+            include: {
+                author: {
+                    select: { id: true, name: true, avatar: true }
+                },
+                community: {
+                    select: { id: true, name: true, avatar: true }
+                },
+                children: {
+                    include: {
+                        author: {
+                            select: { id: true, name: true, avatar: true }
+                        },
+                        children: {
+                            include: {
+                                author: {
+                                    select: { id: true, name: true, avatar: true }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        return post;
+    } catch (error) {
+        console.error("Error fetching post:", error);
+    }
+}
+
+
+export const addCommentToPost = async (postId: number, commentText: string, userId: string) => {
+
+    try {
+
+        const newComment = await prisma.post.create({
+            data: {
+                text: commentText,
+                author: {
+                    connect: {
+                        id: userId,
+                    },
+                },
+                parent: {
+                    connect: {
+                        id: Number(postId),
+                    },
+                },
+            }
+        });
+
+        // Add the comment's ID to the original post's children array
+        await prisma.post.update({
+            where: { id: Number(postId) },
+            data: {
+                children: {
+                    connect: {
+                        id: newComment.id,
+                    },
+                },
+            },
+        });
+
+        return newComment;
+
+    } catch (error) {
+        console.error("Error adding comment to post:", error);
     }
 }

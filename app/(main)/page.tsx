@@ -23,24 +23,22 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
     return (
         <main>
 
-            <h1>Bootcamp home page</h1>
-
             <section className='mt-9 flex flex-col gap-10'>
                 {result?.posts.length === 0 ? (
-                    <p className='no-result'>No threads found</p>
+                    <p className='no-result'>Looks so empty..</p>
                 ) : (
                     <>
                         {result?.posts.map((post) => (
                             <PostCard
-                                key={post.id}
-                                id={post.id}
+                                key={post.id.toString()}
+                                id={post.id.toString()}
                                 currentUserId={user.id}
-                                parentId={post.parentId}
+                                parentId={post.parentId ? post.parentId.toString() : null}
                                 content={post.text}
-                                author={post.author}
-                                community={post.community}
-                                createdAt={post.createdAt}
-                                comments={post.children}
+                                author={{ name: post.author.name, avatar: post.author.avatar || '', id: post.author.id }}
+                                community={post.community ? { name: post.community.name, avatar: post.community.avatar || '', id: post.community.id } : null}
+                                createdAt={post.createdAt.toISOString()}
+                                comments={post.children.map(child => ({ author: { avatar: child.author.avatar || '' } }))}
                             />
                         ))}
                     </>

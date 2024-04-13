@@ -1,32 +1,37 @@
+'use client'
+
 import Image from "next/image";
 import Link from "next/link";
 
 import { formatDateString } from "@/lib/utils";
 import DeletePost from "../forms/DeletePost";
+import {useState} from "react";
 
 interface Props {
-    id: string;
+    id: number;
     currentUserId: string;
-    parentId: string | null;
+    parentId: number | null;
     content: string;
     author: {
         name: string;
-        avatar: string;
+        avatar: string | null;
         id: string;
     };
     community: {
         id: string;
         name: string;
-        avatar: string;
+        avatar: string | null;
     } | null;
-    createdAt: string;
+    createdAt: string  ;
     comments: {
         author: {
-            avatar: string;
+            avatar: string | null;
         };
     }[];
     isComment?: boolean;
 }
+
+
 
 function PostCard({
                         id,
@@ -39,6 +44,11 @@ function PostCard({
                         comments,
                         isComment,
                     }: Props) {
+
+
+    const [toggleLike , setToggleLike] = useState(true)
+
+
     return (
         <article
             className={`flex w-full flex-col rounded-xl ${
@@ -71,13 +81,23 @@ function PostCard({
 
                         <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
                             <div className='flex gap-3.5'>
-                                <Image
+                                { toggleLike ? <Image
                                     src='/assets/heart-gray.svg'
                                     alt='heart'
                                     width={24}
                                     height={24}
                                     className='cursor-pointer object-contain'
-                                />
+                                    onClick={ () => setToggleLike(!toggleLike)}
+                                /> :
+                                    <Image
+                                        src='/assets/heart-filled.svg'
+                                        alt='heart'
+                                        width={24}
+                                        height={24}
+                                        className='cursor-pointer object-contain'
+                                        onClick={ () => setToggleLike(!toggleLike)}
+                                    />
+                                }
                                 <Link href={`/post/${id}`}>
                                     <Image
                                         src='/assets/reply.svg'

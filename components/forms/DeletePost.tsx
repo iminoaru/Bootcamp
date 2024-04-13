@@ -9,7 +9,7 @@ interface Props {
     postId: number | string;
     currentUserId: string;
     authorId: string;
-    parentId: string | null;
+    parentId: number | null;
     isComment?: boolean;
 }
 

@@ -26,12 +26,12 @@ import {usePathname, useRouter} from "next/navigation";
 
 interface Props {
     user: {
-        clerkId: String
-        dbId: number
-        username: string
+        clerkId: string
+        dbId: number | string
+        username: string | null
         name: string
-        bio: string
-        avatar: string
+        bio: string | null
+        avatar: string | null
     }
     buttonTitle : string
 }
@@ -83,13 +83,13 @@ export default function AccountP({user , buttonTitle}: Props) {
         const changed = isBase64Image(avatarData)
 
         // checks if the avatar is changed or not, if changed it is updated
-        if(changed){
-            const avatarRes = await startUpload(files)
-
-            if(avatarRes && avatarRes[0].fileUrl){
-                values.avatar = avatarRes[0].fileUrl
-            }
-        }
+        // if(changed){
+        //     const avatarRes = await startUpload(files)
+        //
+        //     if(avatarRes && avatarRes[0].fileUrl){
+        //         values.avatar = avatarRes[0].fileUrl
+        //     }
+        // }
 
         await updateUser({
             id: user.clerkId,

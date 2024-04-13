@@ -65,3 +65,47 @@ export const fetchUser = async (id : string) => {
         console.log('failed fetchUser ' + err)
     }
 }
+
+
+export async function fetchUserPosts(userId: string) {
+
+    try {
+
+        const posts = await prisma.post.findMany({
+            where: {
+                authorId: userId
+            },
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true
+                    }
+                },
+                community: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true
+                    }
+                },
+                children: {
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        return posts;
+    } catch (error) {
+        console.error("Error fetching user posts:", error);
+    }
+}
