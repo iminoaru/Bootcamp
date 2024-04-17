@@ -10,7 +10,7 @@ async function Page() {
 
     const userInfo = await fetchUser(user.id)
 
-    const activity = await getActivity(userInfo?.id)
+    const activity = await getActivity(userInfo.id)
 
     return (
         <>
@@ -21,7 +21,7 @@ async function Page() {
                     <>
 
                         {activity.map((activity) => (
-                            <Link key={activity._id} href={`/post/${activity.parentId}`}>
+                            <Link key={activity.id} href={`/post/${activity.parentId}`}>
                                 <article className='activity-card'>
                                     <Image
                                         src={activity.author.avatar}

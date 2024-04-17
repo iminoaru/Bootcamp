@@ -216,3 +216,43 @@ export async function fetchAllUsers({
 
 
 
+export async function getActivity(userId: string) {
+
+    try {
+
+        const userPosts = await prisma.post.findMany({
+            where: { authorId: userId },
+            include: { children: true },
+        });
+
+
+        const childPostIds = userPosts.reduce<number[]>((acc, userPost) => {
+            return [...acc, ...userPost.children.map(child => child.id)];
+        }, []);
+
+
+         const replies = await prisma.post.findMany({
+            where: {
+                id: { in: childPostIds },
+                authorId: { not: userId }, // Exclude posts authored by the same user
+            },
+
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true
+                    }
+                }
+            }
+        });
+
+        return replies;
+
+    } catch (error) {
+        console.error("Error fetching notifications: ", error);
+        throw error;
+    }
+}
+
