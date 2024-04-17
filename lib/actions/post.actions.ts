@@ -171,3 +171,21 @@ export const addCommentToPost = async (postId: number, commentText: string, user
         console.error("Error adding comment to post:", error);
     }
 }
+
+
+export const deletePost = async (postId: number, path: string) => {
+
+    try {
+        await prisma.post.delete({
+            where: { id: postId },
+        });
+
+        if (path === "/") {
+            return;
+        }
+
+
+    } catch (error) {
+        console.error("Error deleting post:", error);
+    }
+}
