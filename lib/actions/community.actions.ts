@@ -42,7 +42,7 @@ export async function fetchCommunityDetails(id: string) {
         const communityDetails = await prisma.community.findUnique({
             where: { id },
             include: {
-                createdById: true,
+                createdBy: true,
                 communityMemberships: {
                     include: {
                         user: {
@@ -118,7 +118,7 @@ export async function fetchCommunities(
                     { name: { contains: searchString } },
                 ],
             },
-            orderBy: { createdAt: sortBy },
+            orderBy: { id: sortBy },
             skip: skipAmount,
             take: pageSize,
             include: { communityMemberships: true },
