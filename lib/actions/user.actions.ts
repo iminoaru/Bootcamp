@@ -1,6 +1,6 @@
 'use server'
 
-import {PrismaClient} from '@prisma/client'
+import {Prisma, PrismaClient} from '@prisma/client'
 import {revalidatePath} from "next/cache";
 
 const prisma = new PrismaClient()
@@ -107,5 +107,109 @@ export async function fetchUserPosts(userId: string) {
         return posts;
     } catch (error) {
         console.error("Error fetching user posts:", error);
+    }
+}
+
+
+
+export async function fetchUserParentPosts(userId: string) {
+
+    try {
+
+        const posts = await prisma.post.findMany({
+            where: {
+                authorId: userId,
+                parentId: null
+            },
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true
+                    }
+                },
+                community: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true
+                    }
+                },
+                children: {
+                    include: {
+                        author: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy: {id : 'desc'} // show the latest post first
+        });
+
+        return posts;
+    } catch (error) {
+        console.error("Error fetching user posts:", error);
+    }
+}
+
+
+export async function fetchAllUsers({
+                                     userId,
+                                     searchString = "",
+                                     pageNumber = 1,
+                                     pageSize = 20,
+                                 }: {
+    userId: string;
+    searchString?: string;
+    pageNumber?: number;
+    pageSize?: number;
+}) {
+    try {
+
+        const skipAmount = (pageNumber - 1) * pageSize;
+
+
+         const regex = new RegExp(searchString, "i");
+
+
+        const users = await prisma.user.findMany({
+            where: {
+                id: {
+                    not: userId, // Exclude the current user from the results.
+                },
+                OR: [
+                    { username: { contains: searchString } },
+                    { name: { contains: searchString } }
+                ],
+            },
+            orderBy: { id: 'desc' },
+            skip: skipAmount,
+            take: pageSize,
+        });
+
+
+        const totalUsersCount = await prisma.user.count({
+            where: {
+                id: {
+                    not: userId, // Exclude the current user from the results.
+                },
+                OR: [
+                    { username: { contains: searchString } },
+                    { name: { contains: searchString } }
+                ],
+            },
+        });
+
+        const isNext = totalUsersCount > skipAmount + users.length;
+
+        return { users, isNext };
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        throw error;
     }
 }

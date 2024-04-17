@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 // import { fetchCommunityPosts } from "@/lib/actions/community.actions";
- import { fetchUserPosts } from "@/lib/actions/user.actions";
+ import { fetchUserParentPosts } from "@/lib/actions/user.actions";
 
 import PostCard from "../cards/PostCard";
 
@@ -41,7 +41,7 @@ interface Props {
 async function PostsTab({ currentUserId, accountId, accountType }: Props) {
     let result;
 
-    result = await fetchUserPosts(accountId);
+    result = await fetchUserParentPosts(accountId);
 
     if (!result) {
         redirect("/");
