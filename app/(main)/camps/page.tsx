@@ -2,10 +2,10 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs";
 
 import UserCard from "@/components/cards/UserCard";
-import Searchbar from "@/components/shared/Searchbar";
+import SearchBar from "@/components/shared/SearchBar";
 import Pagination from "@/components/shared/Pagination";
 
-import { fetchUser, fetchUsers } from "@/lib/actions/user.actions";
+import { fetchUser, fetchAllUsers } from "@/lib/actions/user.actions";
 
 async function Page({
                         searchParams,
@@ -19,7 +19,7 @@ async function Page({
     if (!userInfo?.admitted) redirect("/auth/admission");
 
 
-    const result = await fetchUsers({
+    const result = await fetchAllUsers({
         userId: user.id,
         searchString: searchParams.q,
         pageNumber: searchParams?.page ? +searchParams.page : 1,
@@ -31,7 +31,7 @@ async function Page({
             <h1 className='head-text mb-10'>Search</h1>
 
 
-            <Searchbar routeType='search' />
+            <SearchBar routeType='search' />
 
             <div className='mt-14 flex flex-col gap-9'>
                 {result.users.length === 0 ? (
@@ -44,7 +44,7 @@ async function Page({
                                 id={person.id}
                                 name={person.name}
                                 username={person.username}
-                                imgUrl={person.image}
+                                imgUrl={person.avatar}
                                 personType='User'
                             />
                         ))}
