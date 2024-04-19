@@ -21,7 +21,7 @@ export const sidebarLinks = [
     },
     {
         imgURL: "/assets/community.svg",
-        route: "/camps",
+        route: "/working",
         label: "Camp",
     },
     {
