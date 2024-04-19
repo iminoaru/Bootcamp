@@ -33,7 +33,6 @@ export default function RootLayout({
 
             </section>
 
-          <RSbar />
         </main>
       <Bottombar />
     </body>
