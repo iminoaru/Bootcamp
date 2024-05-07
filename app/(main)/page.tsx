@@ -10,15 +10,7 @@ import PostCard from "@/components/cards/PostCard";
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | undefined }; }) {
 
     const user = await currentUser();
-    if (!user) return (
-        <main>
-
-            <section className='mt-9 flex flex-col gap-10 item-center'>
-                <h2> Login to view the orders and thoughts. </h2>
-            </section>
-
-        </main>
-    );
+    if (!user) continue
 
     const userInfo = await fetchUser(user.id);
     if (!userInfo?.admitted) redirect("/auth/admission");
