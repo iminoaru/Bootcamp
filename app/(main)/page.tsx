@@ -13,8 +13,8 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
     if (!user) return (
         <main>
 
-            <section className='mt-9 flex flex-col gap-10'>
-                Login to view the orders and thoughts.
+            <section className='mt-9 flex flex-col gap-10 item-center'>
+                <h2> Login to view the orders and thoughts. </h2>
             </section>
 
         </main>
