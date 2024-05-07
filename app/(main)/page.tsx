@@ -14,7 +14,9 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
     if (!user) return null;
     if (!user) return (
         <main>
-          <p className='text-heading3-bold text-light-1 flex items-center max-xs:hidden'>Login to see the posts and orders</p>
+            <section className='mt-9 flex flex-col gap-10'>
+              <p className='text-heading3-bold text-light-1 flex items-center max-xs:hidden'>Login to see the posts and orders</p>
+            </section>
         </main>
     );
 
