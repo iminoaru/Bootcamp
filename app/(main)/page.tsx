@@ -9,16 +9,16 @@ import PostCard from "@/components/cards/PostCard";
 
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | undefined }; }) {
 
-    const user = await currentUser();
-    if (!user) continue
-
-    const userInfo = await fetchUser(user.id);
-    if (!userInfo?.admitted) redirect("/auth/admission");
-
-    const result = await fetchPosts(
+     const result = await fetchPosts(
         searchParams.page ? +searchParams.page : 1,
         30
     );
+
+    const user = await currentUser();
+    if (user) {
+        const userInfo = await fetchUser(user.id);
+        if (!userInfo?.admitted) redirect("/auth/admission");
+    }
 
     return (
         <main>
