@@ -9,6 +9,7 @@ import PostCard from "@/components/cards/PostCard";
 
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | undefined }; }) {
 
+    
     const user = await currentUser();
     if (!user) redirect("/hero");
 
@@ -19,6 +20,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
         searchParams.page ? +searchParams.page : 1,
         30
     );
+
 
     return (
         <main>
